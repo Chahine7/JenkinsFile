@@ -1,6 +1,6 @@
 pipeline {
 agent any
-tools{ jdk 'jdk8’ }
+tools{ jdk 'jdk8'}
 environment { JAVA_HOME = 'C:\\Program Files\\Java\\jdk1.8.0_281' }
 stages {
 stage ('Compile Stage') {
