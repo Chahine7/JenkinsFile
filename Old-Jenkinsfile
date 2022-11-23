@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    tools{ jdk 'JDK8' }
+    environment { JAVA_HOME = '/usr/lib/jvm/java-1.8.0-openjdk-amd64' }
+    stages {
+        
+        stage ('Clone Stage') {
+            steps {
+                git 'https://gitlab.com/jmlhmd/datacamp_helloworld.git'
+            }
+        }
+        stage ('Compile Stage') {
+            steps {
+                withMaven(maven : 'maven3.8.5') {
+                    sh 'mvn clean compile'
+                }
+            }
+        }
+        stage ('Testing Stage') {
+            steps {
+                withMaven(maven : 'maven3.8.5') {
+                    sh  'mvn test'
+                }
+            }
+        }
+        stage ('Install Stage') {
+            steps {
+                withMaven(maven : 'maven3.8.5') {
+                    sh 'mvn install'
+                }
+            }
+        }
+        stage ('Deploy') {
+            steps{
+                sshagent(credentials: ['Vagrant_ssh']) {
+                    // some block
+                    //sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.1.201"
+                    sh "ssh vagrant@192.168.1.201"
+                    sh "scp target/hello-world-app-1.0-SNAPSHOT.jar vagrant@192.168.1.201:/home/vagrant"
+                    sh "ssh vagrant@192.168.1.201 'sudo docker run hello-world'"
+                    sh "whoami"
+                    //sh "sudo scp ./pom.xml vagrant@192.168.1.201:/home/vagrant"
+                }    
+                    //sh 'ssh -T vagrant@192.168.1.201'
+                    //sh 'sudo scp ./pom.xml vagrant@192.168.1.201:/home/vagrant'
+                
+            }
+        }
+        /*stage ('Run Job') {
+            steps {
+                build 'remoting'
+            }
+        }*/
+    }
+}
