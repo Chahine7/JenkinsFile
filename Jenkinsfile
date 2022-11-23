@@ -1,7 +1,7 @@
 pipeline {
 agent any
 tools{ jdk 'jdk13'}
-environment { JAVA_HOME = 'C:\Program Files\Java\jdk-13.0.2' }
+environment { JAVA_HOME = 'C:\\Program Files\\Java\\jdk-13.0.2' }
 stages {
 stage ('Compile Stage') {
 steps {
